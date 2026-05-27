@@ -1,19 +1,21 @@
 -- [[ LuckyHub Key System UI ]] --
--- Разработчик: Сгенерировано профессионально для вас (Clover Particles Update)
+-- Разработчик: Сгенерировано профессионально для вас (Codex & Mobile Optimized)
 
 local LocalPlayer = game:GetService("Players").LocalPlayer
-local CoreGui = game:GetService("CoreGui")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local Lighting = game:GetService("Lighting")
 
--- [[ НАСТРОЙКИ ]] --
-local BLUR_INTENSITY = 20 
-local TWEEN_SPEED = 0.5 
+-- Автоматический выбор безопасного хранилища UI для мобильных читов
+local ParentGui = (type(gethui) == "function" and gethui()) or game:GetService("CoreGui")
 
--- Удаляем старый интерфейс и старый Blur, если они существовали
-if CoreGui:FindFirstChild("LuckyHub_KeySystem") then
-    CoreGui["LuckyHub_KeySystem"]:Destroy()
+-- [[ НАСТРОЙКИ ]] --
+local BLUR_INTENSITY = 20
+local TWEEN_SPEED = 0.5
+
+-- Удаляем старые копии интерфейса
+if ParentGui:FindFirstChild("LuckyHub_KeySystem") then
+    ParentGui["LuckyHub_KeySystem"]:Destroy()
 end
 if Lighting:FindFirstChild("LuckyHub_Blur") then
     Lighting["LuckyHub_Blur"]:Destroy()
@@ -22,14 +24,14 @@ end
 -- Создание ScreenGui
 local LuckyHub_KeySystem = Instance.new("ScreenGui")
 LuckyHub_KeySystem.Name = "LuckyHub_KeySystem"
-LuckyHub_KeySystem.Parent = CoreGui
+LuckyHub_KeySystem.Parent = ParentGui
 LuckyHub_KeySystem.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 -- Логика Blur
 local Blur = Instance.new("BlurEffect")
 Blur.Name = "LuckyHub_Blur"
 Blur.Parent = Lighting
-Blur.Size = 0 
+Blur.Size = 0
 
 TweenService:Create(Blur, TweenInfo.new(TWEEN_SPEED, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = BLUR_INTENSITY}):Play()
 
@@ -46,12 +48,11 @@ local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
 MainFrame.Parent = LuckyHub_KeySystem
 MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25) 
+MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-MainFrame.Size = UDim2.new(0, 320, 0, 240) -- Компактный размер
+MainFrame.Size = UDim2.new(0, 320, 0, 240)
 MainFrame.BorderSizePixel = 0
-MainFrame.Active = true 
-MainFrame.ClipsDescendants = true -- Клеверы не будут вылетать за границы окна!
+MainFrame.Active = true
 
 local MainCorner = Instance.new("UICorner")
 MainCorner.CornerRadius = UDim.new(0, 12)
@@ -62,6 +63,20 @@ MainStroke.Color = Color3.fromRGB(45, 45, 45)
 MainStroke.Thickness = 1.5
 MainStroke.Parent = MainFrame
 
+-- ==========================================
+-- КОНТЕЙНЕР ДЛЯ ИДЕАЛЬНОГО ОБРЕЗАНИЯ КЛЕВЕРОВ
+-- ==========================================
+local ParticleContainer = Instance.new("CanvasGroup")
+ParticleContainer.Name = "ParticleContainer"
+ParticleContainer.Size = UDim2.new(1, 0, 1, 0)
+ParticleContainer.BackgroundTransparency = 1
+ParticleContainer.ZIndex = 1
+ParticleContainer.Parent = MainFrame
+
+local ParticleCorner = Instance.new("UICorner")
+ParticleCorner.CornerRadius = UDim.new(0, 12)
+ParticleCorner.Parent = ParticleContainer
+
 -- Заголовок (Title)
 local Title = Instance.new("TextLabel")
 Title.Name = "Title"
@@ -71,9 +86,9 @@ Title.Position = UDim2.new(0, 0, 0, 15)
 Title.Size = UDim2.new(1, 0, 0, 30)
 Title.Font = Enum.Font.GothamBold
 Title.Text = "LuckyHub"
-Title.TextColor3 = Color3.fromRGB(0, 255, 127) 
+Title.TextColor3 = Color3.fromRGB(0, 255, 127)
 Title.TextSize = 22.000
-Title.ZIndex = 3 -- Поверх частиц
+Title.ZIndex = 3
 
 -- Текстовое поле для ввода (TextBox)
 local KeyInput = Instance.new("TextBox")
@@ -103,12 +118,12 @@ KeyInputStroke.Parent = KeyInput
 local EnterKeyBtn = Instance.new("TextButton")
 EnterKeyBtn.Name = "EnterKeyBtn"
 EnterKeyBtn.Parent = MainFrame
-EnterKeyBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255) 
+EnterKeyBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 EnterKeyBtn.Position = UDim2.new(0.5, -120, 0, 130)
 EnterKeyBtn.Size = UDim2.new(0, 240, 0, 40)
 EnterKeyBtn.Font = Enum.Font.GothamBold
 EnterKeyBtn.Text = "Enter Key"
-EnterKeyBtn.TextColor3 = Color3.fromRGB(0, 0, 0) 
+EnterKeyBtn.TextColor3 = Color3.fromRGB(0, 0, 0)
 EnterKeyBtn.TextSize = 14.000
 EnterKeyBtn.AutoButtonColor = false
 EnterKeyBtn.ZIndex = 3
@@ -121,12 +136,12 @@ EnterKeyCorner.Parent = EnterKeyBtn
 local GetKeyBtn = Instance.new("TextButton")
 GetKeyBtn.Name = "GetKeyBtn"
 GetKeyBtn.Parent = MainFrame
-GetKeyBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255) 
-GetKeyBtn.Position = UDim2.new(0.5, -120, 0, 176) -- Сближенная позиция
+GetKeyBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+GetKeyBtn.Position = UDim2.new(0.5, -120, 0, 176)
 GetKeyBtn.Size = UDim2.new(0, 240, 0, 40)
 GetKeyBtn.Font = Enum.Font.GothamBold
 GetKeyBtn.Text = "Get Key"
-GetKeyBtn.TextColor3 = Color3.fromRGB(0, 0, 0) 
+GetKeyBtn.TextColor3 = Color3.fromRGB(0, 0, 0)
 GetKeyBtn.TextSize = 14.000
 GetKeyBtn.AutoButtonColor = false
 GetKeyBtn.ZIndex = 3
@@ -136,31 +151,29 @@ GetKeyCorner.CornerRadius = UDim.new(0, 8)
 GetKeyCorner.Parent = GetKeyBtn
 
 -- ==========================================
--- СИСТЕМА ПАДАЮЩИХ КЛЕВЕРОВ (PARTICLES)
+-- СИСТЕМА ПАДАЮЩИХ КЛЕВЕРОВ
 -- ==========================================
 task.spawn(function()
     while LuckyHub_KeySystem and LuckyHub_KeySystem.Parent do
-        task.wait(0.25) -- Скорость появления новых клеверов
-        if not MainFrame or not MainFrame.Parent then break end
+        task.wait(0.3) -- Слегка оптимизировано для мобилок
+        if not ParticleContainer or not ParticleContainer.Parent then break end
         
         local Clover = Instance.new("TextLabel")
         Clover.Name = "Clover"
-        Clover.Parent = MainFrame
+        Clover.Parent = ParticleContainer
         Clover.BackgroundTransparency = 1
         Clover.Size = UDim2.new(0, 20, 0, 20)
         
-        -- Рандомная позиция появления наверху окна
         Clover.Position = UDim2.new(math.random(0, 100) / 100, -10, 0, -20)
         Clover.Font = Enum.Font.Gotham
-        Clover.Text = math.random(1, 2) == 1 and "🍀" or "☘️" -- Рандомизация четырехлистника и трехлистника
-        Clover.TextSize = math.random(12, 18) -- Разный размер для глубины
-        Clover.TextTransparency = math.random(4, 7) / 10 -- Полупрозрачные, чтобы не мешали тексту
-        Clover.ZIndex = 1 -- Задний план
+        Clover.Text = math.random(1, 2) == 1 and "🍀" or "☘️"
+        Clover.TextSize = math.random(12, 16)
+        Clover.TextTransparency = math.random(5, 8) / 10
+        Clover.ZIndex = 1
         
-        -- Рандомизация движения
-        local fallDuration = math.random(25, 45) / 10 -- Время падения от 2.5 до 4.5 сек
-        local driftX = Clover.Position.X.Scale + (math.random(-15, 15) / 100) -- Легкое смещение вбок
-        local rotation = math.random(-360, 360) -- Вращение в полете
+        local fallDuration = math.random(30, 50) / 10
+        local driftX = Clover.Position.X.Scale + (math.random(-10, 10) / 100)
+        local rotation = math.random(-180, 180)
         
         local tweenInfo = TweenInfo.new(fallDuration, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
         local tween = TweenService:Create(Clover, tweenInfo, {
@@ -170,7 +183,6 @@ task.spawn(function()
         
         tween:Play()
         
-        -- Очистка памяти после падения
         tween.Completed:Connect(function()
             Clover:Destroy()
         end)
@@ -181,7 +193,7 @@ end)
 -- ВНУТРЕННЯЯ ЛОГИКА UI
 -- ==========================================
 
--- 1. Скрипт перетаскивания (Smooth Drag System)
+-- 1. Скрипт перетаскивания (Адаптирован под Touch-скрины)
 local dragging, dragInput, dragStart, startPos
 
 local function update(input)
@@ -241,7 +253,7 @@ GetKeyBtn.MouseButton1Click:Connect(function()
     end
     
     GetKeyBtn.Text = "Link Copied!"
-    GetKeyBtn.TextColor3 = Color3.fromRGB(0, 180, 90) 
+    GetKeyBtn.TextColor3 = Color3.fromRGB(0, 180, 90)
     
     task.wait(2)
     
@@ -252,7 +264,7 @@ end)
 -- 4. Логика кнопки "Enter Key"
 EnterKeyBtn.MouseButton1Click:Connect(function()
     local enteredKey = KeyInput.Text
-    local correctKey = "LuckyHub_Pro_2026" 
+    local correctKey = "LuckyHub_Pro_2026"
     
     if enteredKey == correctKey then
         Title.Text = "Access Granted!"
