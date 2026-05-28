@@ -265,7 +265,7 @@ applyButtonAnimations(GetKeyBtn, Color3.fromRGB(235, 235, 235))
 
 -- 3. Функционал кнопки "Get Key"
 GetKeyBtn.MouseButton1Click:Connect(function()
-    local keyLink = "https://discord.gg/ZU3YnB5D"
+    local keyLink = "https://discord.gg/PwGqguMJ"
     
     if setclipboard then
         setclipboard(keyLink)
