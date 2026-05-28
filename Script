@@ -1,5 +1,5 @@
 -- [[ LuckyHub Key System UI ]] --
--- Разработчик: Сгенерировано профессионально для вас (Text Update)
+-- Разработчик: Сгенерировано профессионально для вас (Advanced Animations Update)
 
 local LocalPlayer = game:GetService("Players").LocalPlayer
 local TweenService = game:GetService("TweenService")
@@ -100,7 +100,7 @@ KeyInput.Size = UDim2.new(0, 240, 0, 40)
 KeyInput.Font = Enum.Font.Gotham
 KeyInput.PlaceholderText = "Enter your key"
 KeyInput.Text = ""
-KeyInput.PlaceholderColor3 = Color3.fromRGB(120, 120, 120) -- Дефолтный серый цвет текста
+KeyInput.PlaceholderColor3 = Color3.fromRGB(120, 120, 120) 
 KeyInput.TextColor3 = Color3.fromRGB(255, 255, 255)
 KeyInput.TextSize = 14.000
 KeyInput.ZIndex = 3
@@ -110,7 +110,7 @@ KeyInputCorner.CornerRadius = UDim.new(0, 8)
 KeyInputCorner.Parent = KeyInput
 
 local KeyInputStroke = Instance.new("UIStroke")
-KeyInputStroke.Color = Color3.fromRGB(50, 50, 50) -- Дефолтная серая обводка поля
+KeyInputStroke.Color = Color3.fromRGB(50, 50, 50) 
 KeyInputStroke.Thickness = 1
 KeyInputStroke.Parent = KeyInput
 
@@ -119,10 +119,11 @@ local EnterKeyBtn = Instance.new("TextButton")
 EnterKeyBtn.Name = "EnterKeyBtn"
 EnterKeyBtn.Parent = MainFrame
 EnterKeyBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255) 
-EnterKeyBtn.Position = UDim2.new(0.5, -120, 0, 130)
+EnterKeyBtn.AnchorPoint = Vector2.new(0.5, 0.5) -- Изменено для центрирования анимации масштаба
+EnterKeyBtn.Position = UDim2.new(0.5, 0, 0, 150) -- Пересчитанная позиция относительно центра кнопки
 EnterKeyBtn.Size = UDim2.new(0, 240, 0, 40)
 EnterKeyBtn.Font = Enum.Font.GothamBold
-EnterKeyBtn.Text = "Submit" -- ИЗМЕНЕНО: Текст изменен на Submit
+EnterKeyBtn.Text = "Submit" 
 EnterKeyBtn.TextColor3 = Color3.fromRGB(0, 0, 0) 
 EnterKeyBtn.TextSize = 14.000
 EnterKeyBtn.AutoButtonColor = false
@@ -137,7 +138,8 @@ local GetKeyBtn = Instance.new("TextButton")
 GetKeyBtn.Name = "GetKeyBtn"
 GetKeyBtn.Parent = MainFrame
 GetKeyBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255) 
-GetKeyBtn.Position = UDim2.new(0.5, -120, 0, 176) 
+GetKeyBtn.AnchorPoint = Vector2.new(0.5, 0.5) -- Изменено для центрирования анимации масштаба
+GetKeyBtn.Position = UDim2.new(0.5, 0, 0, 196) -- Пересчитанная позиция относительно центра кнопки
 GetKeyBtn.Size = UDim2.new(0, 240, 0, 40)
 GetKeyBtn.Font = Enum.Font.GothamBold
 GetKeyBtn.Text = "Get Key"
@@ -228,19 +230,38 @@ UserInputService.InputChanged:Connect(function(input)
     end
 end)
 
--- 2. Анимации при наведении (Hover Effects)
-local function createHoverAnimation(button, targetColor, duration)
+-- 2. СИСТЕМА УЛУЧШЕННЫХ АНИМАЦИЙ КНОПОК (Hover & Pop Click Feedback)
+local function applyButtonAnimations(button, hoverColor)
     local originalColor = button.BackgroundColor3
+    local defaultSize = UDim2.new(0, 240, 0, 40)
+    local hoverSize = UDim2.new(0, 246, 0, 42) -- Слегка увеличиваем при наведении
+    local clickSize = UDim2.new(0, 234, 0, 37) -- Сжимаем при клике
+    
+    local tweenFast = TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    local tweenClick = TweenInfo.new(0.07, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+
+    -- Логика наведения курсора (Hover)
     button.MouseEnter:Connect(function()
-        TweenService:Create(button, TweenInfo.new(duration, Enum.EasingStyle.Quad), {BackgroundColor3 = targetColor}):Play()
+        TweenService:Create(button, tweenFast, {BackgroundColor3 = hoverColor, Size = hoverSize}):Play()
     end)
+    
     button.MouseLeave:Connect(function()
-        TweenService:Create(button, TweenInfo.new(duration, Enum.EasingStyle.Quad), {BackgroundColor3 = originalColor}):Play()
+        TweenService:Create(button, tweenFast, {BackgroundColor3 = originalColor, Size = defaultSize}):Play()
+    end)
+    
+    -- Логика нажатия (Click Effect)
+    button.MouseButton1Down:Connect(function()
+        TweenService:Create(button, tweenClick, {Size = clickSize}):Play()
+    end)
+    
+    button.MouseButton1Up:Connect(function()
+        TweenService:Create(button, tweenClick, {Size = hoverSize}):Play()
     end)
 end
 
-createHoverAnimation(EnterKeyBtn, Color3.fromRGB(230, 230, 230), 0.2)
-createHoverAnimation(GetKeyBtn, Color3.fromRGB(230, 230, 230), 0.2)
+-- Применяем анимации к кнопкам с эффектом осветления фона до светло-серого
+applyButtonAnimations(EnterKeyBtn, Color3.fromRGB(235, 235, 235))
+applyButtonAnimations(GetKeyBtn, Color3.fromRGB(235, 235, 235))
 
 -- 3. Функционал кнопки "Get Key"
 GetKeyBtn.MouseButton1Click:Connect(function()
@@ -280,13 +301,13 @@ EnterKeyBtn.MouseButton1Click:Connect(function()
         
         -- Текст становится полностью красным, обводка поля остаётся дефолтной серой
         KeyInput.PlaceholderText = "Invalid Key! Try again."
-        KeyInput.PlaceholderColor3 = Color3.fromRGB(255, 64, 64) -- Чистый красный цвет текста
-        KeyInputStroke.Color = Color3.fromRGB(50, 50, 50)         -- Удерживаем стандартный цвет рамки
+        KeyInput.PlaceholderColor3 = Color3.fromRGB(255, 64, 64) 
+        KeyInputStroke.Color = Color3.fromRGB(50, 50, 50)         
         
         task.wait(2)
         
         -- Возвращаем всё в исходное состояние
         KeyInput.PlaceholderText = "Enter your key"
-        KeyInput.PlaceholderColor3 = Color3.fromRGB(120, 120, 120) -- Возвращаем серый цвет текста
+        KeyInput.PlaceholderColor3 = Color3.fromRGB(120, 120, 120) 
     end
 end)
